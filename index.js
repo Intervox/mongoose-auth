@@ -8,6 +8,7 @@ var Modules = {
     everymodule: require('./lib/modules/everymodule')
   , password: require('./lib/modules/password')
   , facebook: require('./lib/modules/facebook')
+  , vkontakte: require('./lib/modules/vkontakte')
   , twitter: require('./lib/modules/twitter')
   , github: require('./lib/modules/github')
   , instagram: require('./lib/modules/instagram')
@@ -15,7 +16,7 @@ var Modules = {
 
 // Mostly, we need this because password needs to be loaded before everything else
 // so that other modules can use everyauth.password.loginKey()
-var moduleLoadOrder = ['everymodule', 'password', 'facebook', 'twitter', 'github', 'instagram'];
+var moduleLoadOrder = ['everymodule', 'password', 'facebook', 'vkontakte', 'twitter', 'github', 'instagram'];
 
 /**
  * Decorates the (User) Schema with the proper attributes.
