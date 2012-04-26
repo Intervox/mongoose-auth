@@ -18,9 +18,9 @@ mongoose-auth supports the following authorization strategies:
 mongoose-auth does 3 things:
 
 1. Schema decoration
-2. (optional) Drop in routing for 
+2. (optional) Drop in routing for
    [connect](https://github.com/senchalabs/connect) apps.
-3. (optional) Dynamic helpers for 
+3. (optional) Dynamic helpers for
    [express](https://github.com/visionmedia/express) apps.
 
 It integrates the [everyauth](https://github.com/bnoguchi/everyauth) module
@@ -32,8 +32,8 @@ independently of mongoose.
 
 As you add successive authorization strategies, mongoose-auth at a bare
 minimum augments your schema with typed attributes corresponding to parameters
-related to your chosen authorization strategies. For example, if facebook is 
-one of your authorization strategies, then it will add attributes to your 
+related to your chosen authorization strategies. For example, if facebook is
+one of your authorization strategies, then it will add attributes to your
 User Schema such as 'fb.id' and 'fb.email'.
 
 To decorate your schema:
@@ -42,7 +42,7 @@ To decorate your schema:
     var mongoose = require('mongoose')
       , Schema = mongoose.Schema
       , mongooseAuth = require('mongoose-auth');
-    
+
     var UserSchema = new Schema({});
     UserSchema.plugin(mongooseAuth, {
       facebook: true
@@ -56,7 +56,7 @@ to implement a complete authorization strategy. Applications also need
 routes exposing the one or more steps involved for a given authorization
 strategy. Moreover, applications each handle in their own unique way how
 they want to respond to successful or failed logins (in addition to logout
-handling). If you are not using a 
+handling). If you are not using a
 [connect](https://github.com/senchalabs/connect), then you will have to
 set all of this up yourself. In this case, mongoose-auth *only* provides
 you with Schema decoration.
@@ -71,10 +71,10 @@ comments:
     var mongoose = require('mongoose')
       , Schema = mongoose.Schema
       , mongooseAuth = require('mongoose-auth');
-    
+
     var UserSchema = new Schema({})
       , User;
-   
+
     // STEP 1: Schema Decoration and Configuration for the Routing
     UserSchema.plugin(mongooseAuth, {
         // Here, we attach your User model to every module
@@ -85,7 +85,7 @@ comments:
               }
           }
         }
-        
+
       , facebook: {
           everyauth: {
               myHostname: 'http://localhost:3000'
@@ -95,7 +95,7 @@ comments:
           }
         }
     });
-   
+
     mongoose.model('User', UserSchema);
 
     mongoose.connect('mongodb://localhost/example');
@@ -107,16 +107,16 @@ comments:
       , express.static(__dirname + "/public")
       , express.cookieParser()
       , express.session({ secret: 'esoognom'})
-      
+
         // STEP 2: Add in the Routing
       , mongooseAuth.middleware()
 
-        // IMPORTANT!!!!!!! Do not add app.router, to your middleware chain 
+        // IMPORTANT!!!!!!! Do not add app.router, to your middleware chain
         // explicitly, or you will run into problems accessing `req.user`
         // i.e., do not use app.use(app.router). Let express do this for you
         // automatically for you upon your first app.get or app.post.
     );
-   
+
     // STEP 3: Add in Dynamic View Helpers (only if you are using express)
     mongooseAuth.helpExpress(app);
 
@@ -132,12 +132,12 @@ your view, so you do not have to pass `req` as a local to your view:
 
 - `everyauth.loggedIn` - a Boolean getter that tells you if the request is by a logged in user
 - `everyauth.user` - the mongoose User document associated with the session
-- `everyauth.facebook` - The is equivalent to what is stored at `req.session.auth.facebook`, 
+- `everyauth.facebook` - The is equivalent to what is stored at `req.session.auth.facebook`,
   so you can do things like ...
 - `everyauth.facebook.user` - returns the user json provided from the OAuth provider.
 - `everyauth.facebook.accessToken` - returns the access_token provided from the OAuth provider
   for authorized API calls on behalf of the user.
-- And you also get this pattern for other modules - e.g., `everyauth.twitter.user`, 
+- And you also get this pattern for other modules - e.g., `everyauth.twitter.user`,
   `everyauth.github.user`, etc.
 
 You also get access to the view helper
@@ -226,6 +226,15 @@ Here is an example, using 5 authorization strategies:
             , redirectPath: '/'
           }
         }
+      , vkontakte: {
+          everyauth: {
+              myHostname: 'http://localhost:3000'
+            , appId: conf.vk.appId
+            , appSecret: conf.vk.appSecret
+            , fields: conf.vk.fields // @see http://vk.com/developers.php?oid=-1&p=users.get for a list
+            , redirectPath: '/'
+          }
+        }
     });
 ```
 
@@ -246,17 +255,17 @@ document.
 
 This can be done in the following way:
 
-The real magic lies with https://github.com/bnoguchi/everyauth/, and it should be more obvious once 
+The real magic lies with https://github.com/bnoguchi/everyauth/, and it should be more obvious once
 I document everyauth more and document mongoose-auth's relationship to everyauth.
 
-In `everyauth`'s design, every auth module is defined as a set of steps, which are exposed in such a way for 
-you to over-ride. The step that is of particular interest for this scenario is the `findOrCreateUser` step 
-required by every `everyauth` module.  `mongoose-auth` defines a default version of this `findOrCreateUser` 
-step for each `everyauth` auth module it supports (You can find these default definitions in 
-"lib/modules/#{moduleName}/everyauth.js" -- e.g., see 
+In `everyauth`'s design, every auth module is defined as a set of steps, which are exposed in such a way for
+you to over-ride. The step that is of particular interest for this scenario is the `findOrCreateUser` step
+required by every `everyauth` module.  `mongoose-auth` defines a default version of this `findOrCreateUser`
+step for each `everyauth` auth module it supports (You can find these default definitions in
+"lib/modules/#{moduleName}/everyauth.js" -- e.g., see
 [.lib/modules/facebook/everyauth.js](https://github.com/bnoguchi/mongoose-auth/tree/master/lib/modules/facebook/everyauth.js)).
 
-So for example, this is how you would over-ride the default `findOrCreateUser` step for the 
+So for example, this is how you would over-ride the default `findOrCreateUser` step for the
 facebook module if you are using both the facebook and password module:
 
 ```javascript
@@ -288,7 +297,7 @@ UserSchema.plugin(mongooseAuth, {
               });
             } else {
               assignFbDataToUser(user, accessTok, accessTokExtra, fbUser);
-              
+
               // Save the new data to the user doc in the db
               user.save( function (err, user) {
                 if (err) return promise.fail(err);
@@ -401,7 +410,7 @@ What this effectively does is:
 1. Adds `phone`, `name.first`, and `name.last` as attributes to your `UserSchema`.
 2. Automatically extracts the registration parameters after a visitor submits the registration
    form and saves them to a new `User` document.
-   The registration form `<input>` `name`s should be, e.g., in the example above: 'phone', 
+   The registration form `<input>` `name`s should be, e.g., in the example above: 'phone',
    'name[first]', and 'name[last]'.
 
 Please see [./example/server.js](https://github.com/bnoguchi/mongoose-auth/tree/master/example/server.js#L45)
@@ -445,7 +454,7 @@ UserSchema.plugin(mongooseAuth, {
       }
     }
   , password: {
-        loginWith: 'email' 
+        loginWith: 'email'
       , everyauth: {
             getLoginPath: '/login'
           , postLoginPath: '/login'
@@ -455,13 +464,13 @@ UserSchema.plugin(mongooseAuth, {
           , registerView: 'register.jade'
           , loginSuccessRedirect: '/'
           , registerSuccessRedirect: '/'
-   
+
             // WHAT YOU ADD IS THE FOLLOWING:
             // The logic is adapted from the default authenticate
             // implementation in lib/modules/password/everyauth.js
           , authenticate: function (login, password) {
               var promise
-                , errors = []; 
+                , errors = [];
               if (!login) errors.push('Missing login.');
               if (!password) errors.push('Missing password.');
               if (errors.length) return errors;
@@ -471,18 +480,18 @@ UserSchema.plugin(mongooseAuth, {
                 if (err) {
                   errors.push(err.message || err);
                   return promise.fulfill(errors);
-                }   
+                }
                 if (!user) {
                   errors.push('Failed login.');
                   return promise.fulfill(errors);
                 }
-                
+
                 // The following block is the new code
                 if (!user.active) {
                   errors.push('You are not yet activated.');
                   return promise.fulfill(errors);
                 }
-                
+
                 promise.fulfill(user);
               });
               return promise;
