@@ -17,11 +17,7 @@ var Modules = {
 
 // Mostly, we need this because password needs to be loaded before everything else
 // so that other modules can use everyauth.password.loginKey()
-<<<<<<< HEAD
-var moduleLoadOrder = ['everymodule', 'password', 'facebook', 'vkontakte', 'twitter', 'github', 'instagram'];
-=======
-var moduleLoadOrder = ['everymodule', 'password', 'facebook', 'twitter', 'github', 'instagram', 'google'];
->>>>>>> mongoose-auth-prod/master
+var moduleLoadOrder = ['everymodule', 'password', 'facebook', 'vkontakte', 'twitter', 'github', 'instagram', 'google'];
 
 /**
  * Decorates the (User) Schema with the proper attributes.
@@ -59,8 +55,8 @@ exports = module.exports = function plugin (schema, opts) {
       if (!everyauthConfig[k])
         everyauthConfig[k] = everyauthDefaults[k];
     }
-   
-    // Configure everyauth for this module 
+
+    // Configure everyauth for this module
     for (var k in everyauthConfig) {
       everyauth[moduleName][k]( everyauthConfig[k] );
     }
